@@ -1,1 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8th Grade Math: Exponential Functions Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0fdf4;
+            background-image: radial-gradient(#bbf7d0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+        /* Custom scrollbar for the review screen */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
 
+    <!-- Main Quiz Container -->
+    <div class="max-w-3xl w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-green-100 fade-in" id="quiz-container">
+        
+        <!-- Header -->
+        <div class="bg-green-600 text-white p-6 text-center shadow-md z-10 relative">
+            <h1 class="text-3xl font-bold mb-2"><i class="fa-solid fa-rocket mr-2"></i> Exponential Explorers Exam</h1>
+            <p class="text-green-100">75 Questions to Master Exponents, Percents, and Graphs!</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="p-8 text-center">
+            <div class="mb-8 text-gray-600 space-y-4">
+                <p class="text-lg">Welcome! This ultimate test has 75 questions covering:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-left max-w-lg mx-auto bg-green-50 p-4 rounded-xl">
+                    <p><i class="fa-solid fa-check text-green-500 mr-2"></i> Intro to Exponential Functions</p>
+                    <p><i class="fa-solid fa-check text-green-500 mr-2"></i> Simple & Compound Interest</p>
+                    <p><i class="fa-solid fa-check text-green-500 mr-2"></i> Rational Exponents</p>
+                    <p><i class="fa-solid fa-check text-green-500 mr-2"></i> Percent Increase/Decrease</p>
+                    <p><i class="fa-solid fa-check text-green-500 mr-2"></i> Evaluating Functions</p>
+                    <p><i class="fa-solid fa-check text-green-500 mr-2"></i> Graphs & Relations</p>
+                </div>
+                <p class="font-semibold text-green-700 mt-4">Take your time, use scratch paper, and you can review all your answers at the end!</p>
+            </div>
+            <button onclick="startQuiz()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition-transform">
+                Start Exam <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="question-screen" class="hidden p-6 md:p-8">
+            <!-- Progress Bar -->
+            <div class="mb-6">
+                <div class="flex justify-between text-sm text-gray-500 font-bold mb-2">
+                    <span id="progress-text">Question 1 of 75</span>
+                    <span id="score-text">Score: 0</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-green-500 h-2.5 rounded-full" style="width: 1.33%"></div>
+                </div>
+                <div class="mt-2 text-xs font-semibold text-blue-600 uppercase tracking-wider" id="topic-tag">Topic</div>
+            </div>
+
+            <!-- Question -->
+            <h2 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800 mb-6 min-h-[4rem]">
+                Question text goes here?
+            </h2>
+
+            <!-- Options -->
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Options injected via JS -->
+            </div>
+
+            <!-- Explanation Box (Hidden initially) -->
+            <div id="explanation-box" class="hidden bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6 fade-in">
+                <h3 id="feedback-title" class="font-bold text-lg mb-1">Feedback</h3>
+                <p id="explanation-text" class="text-gray-700">Explanation goes here.</p>
+            </div>
+
+            <!-- Next Button -->
+            <div class="text-right">
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition-colors">
+                    Next Question <i class="fa-solid fa-angle-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="hidden p-8 text-center fade-in">
+            <i class="fa-solid fa-trophy text-6xl text-yellow-400 mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Exam Complete!</h2>
+            <p class="text-gray-600 text-lg mb-6">You've finished all 75 questions.</p>
+            
+            <div class="bg-gray-100 rounded-2xl p-6 mb-8 inline-block min-w-[250px]">
+                <p class="text-sm text-gray-500 font-bold uppercase tracking-wide">Final Score</p>
+                <p class="text-5xl font-black text-green-600 my-2"><span id="final-score">0</span><span class="text-3xl text-gray-400">/75</span></p>
+                <p id="percentage-text" class="text-xl font-semibold text-gray-700">0%</p>
+            </div>
+            
+            <p id="performance-message" class="text-lg font-medium text-gray-700 mb-8 max-w-md mx-auto"></p>
+
+            <div class="space-x-4">
+                <button onclick="showReviewScreen()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-colors">
+                    <i class="fa-solid fa-list-check mr-2"></i> Review Answers
+                </button>
+                <button onclick="resetQuiz()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-colors">
+                    <i class="fa-solid fa-rotate-right mr-2"></i> Try Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="review-screen" class="hidden flex-col h-[80vh] fade-in">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                <h2 class="text-2xl font-bold text-gray-800">Quiz Review</h2>
+                <button onclick="hideReviewScreen()" class="text-gray-500 hover:text-gray-800 transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            <div id="review-container" class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6 bg-white">
+                <!-- Review items injected via JS -->
+            </div>
+            <div class="p-6 border-t border-gray-200 bg-gray-50 text-center">
+                <button onclick="hideReviewScreen()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded-full shadow transition-colors">
+                    Back to Results
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            // --- TOPIC 1: Exponential Functions Basics (12 Questions) ---
+            { topic: "Exponential Basics", question: "In the standard exponential formula y = a(b)<sup>x</sup>, what does 'a' represent?", options: ["The base", "The exponent", "The initial value (y-intercept)", "The growth rate"], answer: 2, explanation: "'a' is the starting amount, also known as the initial value or y-intercept when x=0." },
+            { topic: "Exponential Basics", question: "In the function y = 8(3)<sup>x</sup>, what is the initial value?", options: ["3", "8", "24", "x"], answer: 1, explanation: "The number outside the parenthesis, 'a', is the initial value. Here, it's 8." },
+            { topic: "Exponential Basics", question: "In the function y = 5(4)<sup>x</sup>, what is the growth factor?", options: ["4", "5", "20", "x"], answer: 0, explanation: "The base of the exponent, 'b', is the growth factor. Here, it is 4." },
+            { topic: "Exponential Basics", question: "Which of these bases 'b' would create an exponential GROWTH function?", options: ["b = 0.5", "b = 1", "b = 1.8", "b = -2"], answer: 2, explanation: "For exponential growth, the base 'b' must be greater than 1." },
+            { topic: "Exponential Basics", question: "Which of these bases 'b' would create an exponential DECAY function?", options: ["b = 2", "b = 1.05", "b = 0.75", "b = 0"], answer: 2, explanation: "For exponential decay, the base 'b' must be a decimal or fraction strictly between 0 and 1." },
+            { topic: "Exponential Basics", question: "Which of the following is NOT an exponential function?", options: ["y = 4(2)<sup>x</sup>", "y = x<sup>4</sup>", "y = 0.5(3)<sup>x</sup>", "y = 10(0.1)<sup>x</sup>"], answer: 1, explanation: "y = x<sup>4</sup> is a polynomial function because the variable x is the base, not the exponent." },
+            { topic: "Exponential Basics", question: "In an exponential function, the variable (like 'x') is always located in the...", options: ["Denominator", "Numerator", "Base", "Exponent"], answer: 3, explanation: "This is what makes it 'exponential'—the variable is the exponent itself." },
+            { topic: "Exponential Basics", question: "A linear function changes by repeatedly adding. How does an exponential function change?", options: ["By repeatedly subtracting", "By repeatedly dividing only", "By repeatedly multiplying", "By repeatedly squaring"], answer: 2, explanation: "Exponential functions grow or decay by multiplying by a constant factor over equal intervals." },
+            { topic: "Exponential Basics", question: "A colony of ants starts with 100 ants and triples every month. Which equation matches this?", options: ["y = 100 + 3x", "y = 3(100)<sup>x</sup>", "y = 100(3)<sup>x</sup>", "y = 3x<sup>100</sup>"], answer: 2, explanation: "The initial value (a) is 100, and the growth factor (b) is 3. So, y = 100(3)<sup>x</sup>." },
+            { topic: "Exponential Basics", question: "A radioactive substance starts at 50 grams and halves every year. Which equation matches this?", options: ["y = 50 - 0.5x", "y = 50(0.5)<sup>x</sup>", "y = 0.5(50)<sup>x</sup>", "y = 50 / x"], answer: 1, explanation: "The initial value is 50, and halving means the decay factor is 0.5. So, y = 50(0.5)<sup>x</sup>." },
+            { topic: "Exponential Basics", question: "Look at the table: (x=0, y=2), (x=1, y=10), (x=2, y=50). What is the exponential equation?", options: ["y = 2(5)<sup>x</sup>", "y = 5(2)<sup>x</sup>", "y = 2x + 8", "y = 10<sup>x</sup>"], answer: 0, explanation: "The y-intercept (when x=0) is 2. The y-values are multiplied by 5 each time. So, y = 2(5)<sup>x</sup>." },
+            { topic: "Exponential Basics", question: "Identify the base of the exponent in the function f(x) = 15(0.25)<sup>x</sup>.", options: ["15", "x", "0.25", "3.75"], answer: 2, explanation: "The base is the number attached directly to the exponent 'x', which is 0.25 in this case." },
+
+            // --- TOPIC 2: Simple & Compound Interest (13 Questions) ---
+            { topic: "Simple & Compound Interest", question: "What is the formula for calculating Simple Interest?", options: ["I = P(1+r)", "I = PRT", "I = P / RT", "A = P(1+r)<sup>t</sup>"], answer: 1, explanation: "Simple interest is found by multiplying Principal × Rate × Time (I = PRT)." },
+            { topic: "Simple & Compound Interest", question: "What is the formula for calculating the total amount with Compound Interest?", options: ["A = PRT", "A = P + I", "A = P(1 + r)<sup>t</sup>", "A = P(1 - r)<sup>t</sup>"], answer: 2, explanation: "The standard annual compound interest formula is A = P(1 + r)<sup>t</sup>." },
+            { topic: "Simple & Compound Interest", question: "Find the simple interest earned: Principal = $200, Rate = 5%, Time = 3 years.", options: ["$30", "$10", "$300", "$15"], answer: 0, explanation: "I = PRT. I = 200 × 0.05 × 3 = $30." },
+            { topic: "Simple & Compound Interest", question: "If you borrow $500 at 4% simple interest for 2 years, what is the TOTAL amount you must repay?", options: ["$40", "$540", "$508", "$520"], answer: 1, explanation: "First find interest: I = 500 × 0.04 × 2 = $40. Then add to principal: $500 + $40 = $540." },
+            { topic: "Simple & Compound Interest", question: "Find the total amount using compound interest: Principal = $100, Rate = 10%, Time = 2 years.", options: ["$120", "$121", "$110", "$210"], answer: 1, explanation: "A = 100(1 + 0.10)<sup>2</sup> = 100(1.10)<sup>2</sup> = 100(1.21) = $121." },
+            { topic: "Simple & Compound Interest", question: "Find the total amount using compound interest: Principal = $1000, Rate = 5%, Time = 3 years. (Round to nearest dollar)", options: ["$1150", "$1158", "$1500", "$1015"], answer: 1, explanation: "A = 1000(1.05)<sup>3</sup> = 1000(1.157625) ≈ $1158." },
+            { topic: "Simple & Compound Interest", question: "In financial formulas, an interest rate of 8% must be written as what decimal?", options: ["8.0", "0.8", "0.08", "0.008"], answer: 2, explanation: "To convert a percentage to a decimal, divide by 100. 8 ÷ 100 = 0.08." },
+            { topic: "Simple & Compound Interest", question: "If you invest money for exactly ONE year, which gives you more money: simple or compound interest? (Assuming same rate)", options: ["Simple", "Compound", "They give the exact same amount", "Cannot be determined"], answer: 2, explanation: "For exactly one year (one compounding period), both formulas yield the exact same interest. Compound interest only pulls ahead in year 2 and beyond." },
+            { topic: "Simple & Compound Interest", question: "What does the 'P' stand for in interest formulas?", options: ["Payment", "Period", "Percentage", "Principal"], answer: 3, explanation: "P stands for Principal, the initial amount of money deposited or borrowed." },
+            { topic: "Simple & Compound Interest", question: "Find the simple interest earned: $400 at 6% for 5 years.", options: ["$120", "$520", "$24", "$12"], answer: 0, explanation: "I = 400 × 0.06 × 5 = $120." },
+            { topic: "Simple & Compound Interest", question: "Why does compound interest grow faster than simple interest over time?", options: ["The principal increases artificially", "You earn interest on your original money AND on previously earned interest", "The rate increases every year", "Simple interest formulas divide by time"], answer: 1, explanation: "Compound interest calculates interest on the new total balance every year, creating 'interest on interest'." },
+            { topic: "Simple & Compound Interest", question: "You deposit $500 into an account paying 4% simple interest. You deposit another $500 into a 4% compound interest account. After 10 years, which account has more money?", options: ["Simple interest account", "Compound interest account", "They have the same", "Depends on the bank"], answer: 1, explanation: "Over any time longer than 1 year, compound interest will always grow larger than simple interest." },
+            { topic: "Simple & Compound Interest", question: "What does 't' represent in the compound interest formula A = P(1+r)<sup>t</sup>?", options: ["Total amount", "Tax", "Time (usually in years)", "Times compounded"], answer: 2, explanation: "'t' represents the amount of time the money is invested or borrowed, typically measured in years." },
+
+            // --- TOPIC 3: Rational Exponents (13 Questions) ---
+            { topic: "Rational Exponents", question: "What is the equivalent radical form of x<sup>1/2</sup>?", options: ["x / 2", "x<sup>2</sup>", "&radic;x (Square root of x)", "&#8731;x (Cube root of x)"], answer: 2, explanation: "A fractional exponent of 1/2 is exactly the same as taking the square root." },
+            { topic: "Rational Exponents", question: "What is the equivalent radical form of x<sup>1/3</sup>?", options: ["x / 3", "x<sup>3</sup>", "&radic;x", "&#8731;x (Cube root of x)"], answer: 3, explanation: "A fractional exponent of 1/3 means taking the cube root of the base." },
+            { topic: "Rational Exponents", question: "Evaluate: 16<sup>1/2</sup>", options: ["8", "4", "32", "256"], answer: 1, explanation: "16<sup>1/2</sup> means the square root of 16, which is 4 because 4 × 4 = 16." },
+            { topic: "Rational Exponents", question: "Evaluate: 100<sup>1/2</sup>", options: ["10", "50", "10000", "25"], answer: 0, explanation: "100<sup>1/2</sup> means the square root of 100. 10 × 10 = 100, so the answer is 10." },
+            { topic: "Rational Exponents", question: "Evaluate: 8<sup>1/3</sup>", options: ["2", "4", "2.66", "24"], answer: 0, explanation: "8<sup>1/3</sup> means the cube root of 8. Since 2 × 2 × 2 = 8, the answer is 2." },
+            { topic: "Rational Exponents", question: "Evaluate: 27<sup>1/3</sup>", options: ["9", "3", "81", "13.5"], answer: 1, explanation: "27<sup>1/3</sup> means the cube root of 27. Since 3 × 3 × 3 = 27, the answer is 3." },
+            { topic: "Rational Exponents", question: "In the fractional exponent x<sup>2/3</sup>, what does the denominator '3' represent?", options: ["The power you raise x to", "The root you are taking (cube root)", "The number you divide by", "A typo"], answer: 1, explanation: "In a rational exponent, the denominator is the root (index of the radical) and the numerator is the power." },
+            { topic: "Rational Exponents", question: "How do you rewrite the square root of y (&radic;y) using an exponent?", options: ["y<sup>2</sup>", "y<sup>1/2</sup>", "2<sup>y</sup>", "y<sup>-2</sup>"], answer: 1, explanation: "The square root is written as the power of 1/2." },
+            { topic: "Rational Exponents", question: "How do you rewrite the cube root of z (&#8731;z) using an exponent?", options: ["z<sup>3</sup>", "z<sup>1/3</sup>", "3<sup>z</sup>", "z<sup>-3</sup>"], answer: 1, explanation: "The cube root is written as the power of 1/3." },
+            { topic: "Rational Exponents", question: "Simplify using exponent rules: x<sup>2</sup> &middot; x<sup>5</sup>", options: ["x<sup>10</sup>", "x<sup>7</sup>", "2x<sup>7</sup>", "x<sup>2.5</sup>"], answer: 1, explanation: "When multiplying terms with the same base, you ADD their exponents. 2 + 5 = 7." },
+            { topic: "Rational Exponents", question: "Simplify using exponent rules: (x<sup>3</sup>)<sup>4</sup>", options: ["x<sup>7</sup>", "x<sup>12</sup>", "x<sup>81</sup>", "3x<sup>4</sup>"], answer: 1, explanation: "When raising a power to another power, you MULTIPLY the exponents. 3 × 4 = 12." },
+            { topic: "Rational Exponents", question: "Simplify using exponent rules: x<sup>8</sup> / x<sup>2</sup>", options: ["x<sup>10</sup>", "x<sup>4</sup>", "x<sup>6</sup>", "x<sup>16</sup>"], answer: 2, explanation: "When dividing terms with the same base, you SUBTRACT the bottom exponent from the top. 8 - 2 = 6." },
+            { topic: "Rational Exponents", question: "Evaluate: x<sup>0</sup> (where x is not zero)", options: ["0", "x", "1", "undefined"], answer: 2, explanation: "Any non-zero number raised to the power of 0 is always exactly 1." },
+
+            // --- TOPIC 4: Percent Increase/Decrease (12 Questions) ---
+            { topic: "Percent Increase/Decrease", question: "To increase a number by 10%, what decimal should you multiply it by?", options: ["0.10", "1.10", "1.01", "0.90"], answer: 1, explanation: "A 10% increase means you have 100% + 10% = 110%. As a decimal, that is 1.10." },
+            { topic: "Percent Increase/Decrease", question: "To decrease a number by 20%, what decimal should you multiply it by?", options: ["0.20", "1.20", "0.80", "0.02"], answer: 2, explanation: "A 20% decrease means you keep 80% of the original amount (100% - 20%). As a decimal, that is 0.80." },
+            { topic: "Percent Increase/Decrease", question: "What is the decimal multiplier for a 5% increase?", options: ["1.5", "1.05", "0.5", "0.05"], answer: 1, explanation: "100% + 5% = 105%. Moving the decimal two places to the left gives 1.05." },
+            { topic: "Percent Increase/Decrease", question: "What is the decimal multiplier for a 15% decrease?", options: ["0.15", "1.15", "0.85", "8.5"], answer: 2, explanation: "100% - 15% = 85%. Moving the decimal two places left gives 0.85." },
+            { topic: "Percent Increase/Decrease", question: "A $100 jacket is on sale for 25% off. What is the sale price?", options: ["$25", "$75", "$125", "$80"], answer: 1, explanation: "Multiply 100 by the decay multiplier of 0.75 (which is 100% - 25%). 100 × 0.75 = $75." },
+            { topic: "Percent Increase/Decrease", question: "A $50 meal has a 10% tax added to it. What is the total cost?", options: ["$5", "$45", "$55", "$60"], answer: 2, explanation: "Multiply 50 by the growth multiplier of 1.10. 50 × 1.10 = $55." },
+            { topic: "Percent Increase/Decrease", question: "If a store's daily visitors go from 40 up to 50, what is the percent increase?", options: ["10%", "20%", "25%", "80%"], answer: 2, explanation: "Change is 10. Divide by the ORIGINAL amount (40). 10 / 40 = 0.25, which is 25%." },
+            { topic: "Percent Increase/Decrease", question: "If a video game's price drops from $50 down to $40, what is the percent decrease?", options: ["10%", "20%", "25%", "80%"], answer: 1, explanation: "Change is 10. Divide by the ORIGINAL amount (50). 10 / 50 = 0.20, which is 20%." },
+            { topic: "Percent Increase/Decrease", question: "In the exponential growth function y = 500(1.12)<sup>x</sup>, what is the percent rate of growth?", options: ["1.12%", "12%", "112%", "0.12%"], answer: 1, explanation: "The multiplier is 1.12, which represents 112%. This is a 12% increase over the original 100%." },
+            { topic: "Percent Increase/Decrease", question: "In the exponential decay function y = 200(0.85)<sup>x</sup>, what is the percent rate of decay?", options: ["85%", "15%", "0.85%", "1.15%"], answer: 1, explanation: "The multiplier is 0.85 (85%). Since it is 15% less than 100%, the decay rate is 15%." },
+            { topic: "Percent Increase/Decrease", question: "If the growth factor 'b' in y = a(b)<sup>x</sup> is 1.07, what is 'r' (the percent rate as a decimal)?", options: ["1.07", "0.7", "0.07", "7"], answer: 2, explanation: "Since b = 1 + r, and b = 1.07, then r must be 0.07." },
+            { topic: "Percent Increase/Decrease", question: "If the decay factor 'b' in y = a(b)<sup>x</sup> is 0.90, what is 'r' (the percent rate of decay as a decimal)?", options: ["0.90", "0.10", "1.10", "9"], answer: 1, explanation: "Since b = 1 - r, and b = 0.90, then r must be 0.10 (which is a 10% decrease)." },
+
+            // --- TOPIC 5: Evaluating Exponential Functions (13 Questions) ---
+            { topic: "Evaluating Functions", question: "Evaluate y = 2<sup>x</sup> when x = 4.", options: ["8", "16", "6", "24"], answer: 1, explanation: "2<sup>4</sup> = 2 × 2 × 2 × 2 = 16." },
+            { topic: "Evaluating Functions", question: "Evaluate y = 3(2)<sup>x</sup> when x = 3.", options: ["18", "24", "216", "36"], answer: 1, explanation: "Exponents first: 2<sup>3</sup> = 8. Then multiply by 3: 3 × 8 = 24." },
+            { topic: "Evaluating Functions", question: "Evaluate y = 5(3)<sup>x</sup> when x = 1.", options: ["15", "8", "53", "5"], answer: 0, explanation: "3<sup>1</sup> = 3. Then 5 × 3 = 15." },
+            { topic: "Evaluating Functions", question: "Evaluate y = 10(0.5)<sup>x</sup> when x = 2.", options: ["5", "2.5", "10", "0"], answer: 1, explanation: "0.5<sup>2</sup> = 0.25. Then 10 × 0.25 = 2.5." },
+            { topic: "Evaluating Functions", question: "Evaluate y = 100(0.1)<sup>x</sup> when x = 3.", options: ["1", "0.1", "10", "0.01"], answer: 1, explanation: "0.1<sup>3</sup> = 0.001. Then 100 × 0.001 = 0.1." },
+            { topic: "Evaluating Functions", question: "Evaluate y = 4<sup>x</sup> when x = -1.", options: ["-4", "0.25 (or 1/4)", "0", "-0.25"], answer: 1, explanation: "A negative exponent creates a reciprocal. 4<sup>-1</sup> = 1/4, which is 0.25." },
+            { topic: "Evaluating Functions", question: "Evaluate y = 2<sup>x</sup> when x = -2.", options: ["-4", "-1/4", "0.25 (or 1/4)", "0.5"], answer: 2, explanation: "2<sup>-2</sup> = 1 / (2<sup>2</sup>) = 1/4 = 0.25." },
+            { topic: "Evaluating Functions", question: "Evaluate y = 7(4)<sup>x</sup> when x = 0.", options: ["0", "28", "7", "4"], answer: 2, explanation: "4<sup>0</sup> = 1. Then 7 × 1 = 7." },
+            { topic: "Evaluating Functions", question: "A bacteria culture starts with 10 cells and triples every hour (y = 10(3)<sup>x</sup>). How many cells are there after 2 hours?", options: ["60", "90", "30", "100"], answer: 1, explanation: "Substitute x = 2. 3<sup>2</sup> = 9. Then 10 × 9 = 90." },
+            { topic: "Evaluating Functions", question: "A $20,000 car halves in value every decade (y = 20000(0.5)<sup>x</sup>). What is its value after 1 decade?", options: ["$5,000", "$10,000", "$0", "$15,000"], answer: 1, explanation: "Substitute x = 1. 0.5<sup>1</sup> = 0.5. 20000 × 0.5 = $10,000." },
+            { topic: "Evaluating Functions", question: "If f(x) = 1000(1.05)<sup>x</sup>, what is f(1)?", options: ["1050", "1000", "1500", "50"], answer: 0, explanation: "Substitute x = 1. 1.05<sup>1</sup> = 1.05. 1000 × 1.05 = 1050." },
+            { topic: "Evaluating Functions", question: "Evaluate f(x) = -2(3)<sup>x</sup> when x = 2.", options: ["-18", "-12", "-36", "18"], answer: 0, explanation: "Exponents first: 3<sup>2</sup> = 9. Then -2 × 9 = -18." },
+            { topic: "Evaluating Functions", question: "Evaluate f(x) = 5(1)<sup>x</sup> when x = 10.", options: ["50", "15", "5", "1"], answer: 2, explanation: "1 to any power is still 1. 1<sup>10</sup> = 1. Then 5 × 1 = 5." },
+
+            // --- TOPIC 6: Graphs & Relations (12 Questions) ---
+            { topic: "Graphs & Relations", question: "What is the general visual shape of an exponential growth graph?", options: ["A straight line", "A U-shaped curve", "A 'J-curve' that starts flat and rises steeply", "A circle"], answer: 2, explanation: "Exponential growth graphs form a J-curve, staying flat at first then shooting upward rapidly." },
+            { topic: "Graphs & Relations", question: "What is the general visual shape of an exponential decay graph?", options: ["A line sloping downward", "A curve that drops steeply then flattens out near the bottom", "An upside-down U-shape", "A V-shape"], answer: 1, explanation: "Exponential decay falls rapidly from the left, then curves to become nearly flat (horizontal) on the right." },
+            { topic: "Graphs & Relations", question: "Where does the graph of y = 7(2)<sup>x</sup> cross the y-axis (what is the y-intercept)?", options: ["(0, 2)", "(0, 7)", "(0, 14)", "(7, 0)"], answer: 1, explanation: "The y-intercept occurs when x = 0. y = 7(2)<sup>0</sup> = 7(1) = 7." },
+            { topic: "Graphs & Relations", question: "Where does the graph of y = 1(5)<sup>x</sup> cross the y-axis?", options: ["(0, 5)", "(0, 0)", "(0, 1)", "(1, 5)"], answer: 2, explanation: "The 'a' value (initial value) is 1. When x=0, y=1. So the point is (0, 1)." },
+            { topic: "Graphs & Relations", question: "As you read the graph of y = 4(1.5)<sup>x</sup> from left to right, what does the line do?", options: ["It goes UP", "It goes DOWN", "It stays completely flat", "It goes up then down"], answer: 0, explanation: "Because the base (1.5) is greater than 1, it is exponential growth, so the graph goes UP." },
+            { topic: "Graphs & Relations", question: "As you read the graph of y = 6(0.8)<sup>x</sup> from left to right, what does the line do?", options: ["It goes UP", "It goes DOWN", "It stays completely flat", "It goes up then down"], answer: 1, explanation: "Because the base (0.8) is between 0 and 1, it is exponential decay, so the graph goes DOWN." },
+            { topic: "Graphs & Relations", question: "Which graph will grow steeper/faster as x increases: y = 2<sup>x</sup> or y = 5<sup>x</sup>?", options: ["y = 2<sup>x</sup>", "y = 5<sup>x</sup>", "They grow at the exact same rate", "It depends on the y-intercept"], answer: 1, explanation: "The larger the base (growth factor), the faster and steeper the graph will shoot upwards." },
+            { topic: "Graphs & Relations", question: "Compare y = 3(2)<sup>x</sup> and y = 5(2)<sup>x</sup>. Which graph starts higher on the y-axis?", options: ["y = 3(2)<sup>x</sup>", "y = 5(2)<sup>x</sup>", "They start at the same place", "You cannot tell without graphing"], answer: 1, explanation: "The initial value 'a' is the y-intercept. 5 is greater than 3, so y = 5(2)<sup>x</sup> starts higher." },
+            { topic: "Graphs & Relations", question: "If the point (1, y) is on the graph of y = 3(2)<sup>x</sup>, what is the value of y?", options: ["2", "3", "5", "6"], answer: 3, explanation: "Substitute x = 1 into the equation. y = 3(2)<sup>1</sup> = 3 × 2 = 6." },
+            { topic: "Graphs & Relations", question: "Look at this sequence shown on a number line: <br><svg viewBox='0 0 200 40' class='w-full max-w-xs h-10 mt-2'><line x1='10' y1='20' x2='190' y2='20' stroke='black' stroke-width='2'/><circle cx='20' cy='20' r='3' fill='#3b82f6'/><text x='20' y='35' text-anchor='middle' font-size='10'>3</text><circle cx='50' cy='20' r='3' fill='#3b82f6'/><text x='50' y='35' text-anchor='middle' font-size='10'>9</text><circle cx='110' cy='20' r='3' fill='#3b82f6'/><text x='110' y='35' text-anchor='middle' font-size='10'>27</text><circle cx='190' cy='20' r='3' fill='#3b82f6'/><text x='190' y='35' text-anchor='middle' font-size='10'>81</text></svg><br>What type of pattern is this?", options: ["Linear Growth", "Exponential Growth", "Linear Decay", "Exponential Decay"], answer: 1, explanation: "The values are multiplying by 3 each step (3, 9, 27, 81). Multiplying by a constant indicates exponential growth." },
+            { topic: "Graphs & Relations", question: "Look at the shape of this graph:<br><svg viewBox='0 0 100 100' class='w-24 h-24 mt-2 mx-auto'><line x1='10' y1='90' x2='90' y2='90' stroke='#9ca3af' stroke-width='2'/><line x1='10' y1='90' x2='10' y2='10' stroke='#9ca3af' stroke-width='2'/><path d='M 10 10 Q 30 85 90 85' fill='none' stroke='#ef4444' stroke-width='3'/></svg><br>What kind of function does this represent?", options: ["Exponential Growth", "Linear Decrease", "Exponential Decay", "Quadratic"], answer: 2, explanation: "A curve that drops rapidly from the left and flattens out toward the right is the classic shape of exponential decay." },
+            { topic: "Graphs & Relations", question: "If the base of an exponential function is exactly 1, as in y = 5(1)<sup>x</sup>, what shape does the graph make?", options: ["A J-curve", "A U-shape", "A vertical line", "A flat horizontal line"], answer: 3, explanation: "1 to any power is 1. So y = 5(1) = 5. The graph will just be a flat horizontal line at y = 5, meaning no growth or decay happens." }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const questionScreen = document.getElementById('question-screen');
+        const endScreen = document.getElementById('end-screen');
+        const reviewScreen = document.getElementById('review-screen');
+        
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        const scoreText = document.getElementById('score-text');
+        const progressBar = document.getElementById('progress-bar');
+        const topicTag = document.getElementById('topic-tag');
+        
+        const explanationBox = document.getElementById('explanation-box');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const explanationText = document.getElementById('explanation-text');
+        const nextBtn = document.getElementById('next-btn');
+        
+        const finalScoreDisplay = document.getElementById('final-score');
+        const percentageTextDisplay = document.getElementById('percentage-text');
+        const performanceMessage = document.getElementById('performance-message');
+
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            questionScreen.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Reset UI
+            explanationBox.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            
+            const currentQ = questions[currentQuestionIndex];
+            
+            // Update Top Bar
+            progressText.innerText = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            scoreText.innerText = `Score: ${score}`;
+            progressBar.style.width = `${((currentQuestionIndex) / questions.length) * 100}%`;
+            topicTag.innerText = currentQ.topic;
+            
+            // Set Question
+            questionText.innerHTML = currentQ.question;
+            
+            // Create Option Buttons
+            currentQ.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerHTML = `
+                    <div class="flex items-center w-full">
+                        <span class="w-8 h-8 flex-shrink-0 rounded-full bg-gray-100 text-gray-700 font-bold flex items-center justify-center mr-3 border border-gray-300 pointer-events-none">${String.fromCharCode(65 + index)}</span>
+                        <div class="text-left text-lg pointer-events-none flex-1 overflow-hidden">${option}</div>
+                    </div>
+                `;
+                button.className = "option-btn w-full text-left p-4 rounded-xl border-2 border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50 text-gray-800 font-medium focus:outline-none";
+                button.onclick = () => checkAnswer(index, button);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex, selectedButton) {
+            const currentQ = questions[currentQuestionIndex];
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+            
+            // Record User Answer
+            userAnswers[currentQuestionIndex] = selectedIndex;
+
+            // Disable all buttons
+            allButtons.forEach(btn => btn.disabled = true);
+            
+            const isCorrect = selectedIndex === currentQ.answer;
+            
+            if (isCorrect) {
+                score++;
+                scoreText.innerText = `Score: ${score}`;
+                selectedButton.classList.remove('border-gray-200', 'hover:border-blue-400', 'hover:bg-blue-50');
+                selectedButton.classList.add('border-green-500', 'bg-green-100');
+                selectedButton.querySelector('span.rounded-full').classList.add('bg-green-500', 'text-white', 'border-green-600');
+                
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-check text-green-600 mr-2"></i> Correct!`;
+                feedbackTitle.className = "font-bold text-lg mb-1 text-green-700";
+                explanationBox.className = "bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg mb-6 fade-in";
+            } else {
+                selectedButton.classList.remove('border-gray-200', 'hover:border-blue-400', 'hover:bg-blue-50');
+                selectedButton.classList.add('border-red-500', 'bg-red-50');
+                selectedButton.querySelector('span.rounded-full').classList.add('bg-red-500', 'text-white', 'border-red-600');
+                
+                // Highlight correct answer
+                const correctButton = allButtons[currentQ.answer];
+                correctButton.classList.remove('border-gray-200');
+                correctButton.classList.add('border-green-500', 'bg-green-100');
+                correctButton.querySelector('span.rounded-full').classList.add('bg-green-500', 'text-white', 'border-green-600');
+
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-600 mr-2"></i> Not Quite!`;
+                feedbackTitle.className = "font-bold text-lg mb-1 text-red-700";
+                explanationBox.className = "bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6 fade-in";
+            }
+            
+            // Show Explanation
+            explanationText.innerHTML = currentQ.explanation;
+            explanationBox.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+            
+            // Update progress bar to include current question
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+        }
+
+        function showEndScreen() {
+            questionScreen.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            
+            finalScoreDisplay.innerText = score;
+            const percentage = Math.round((score / questions.length) * 100);
+            percentageTextDisplay.innerText = `${percentage}%`;
+            
+            if (percentage >= 90) {
+                performanceMessage.innerHTML = "Outstanding! You are an Exponential Expert! <i class='fa-solid fa-star text-yellow-500 ml-1'></i>";
+            } else if (percentage >= 75) {
+                performanceMessage.innerHTML = "Great job! You made it through a very long test and showed solid understanding.";
+            } else if (percentage >= 60) {
+                performanceMessage.innerHTML = "Good effort! Make sure to review your answers to see where you got tricked up.";
+            } else {
+                performanceMessage.innerHTML = "Keep practicing! Review your answers below to learn from your mistakes.";
+            }
+        }
+
+        function showReviewScreen() {
+            endScreen.classList.add('hidden');
+            reviewScreen.classList.remove('hidden');
+            reviewScreen.classList.add('flex');
+            
+            const container = document.getElementById('review-container');
+            container.innerHTML = ''; // Clear old content
+
+            questions.forEach((q, index) => {
+                const userAnswerIndex = userAnswers[index];
+                const isCorrect = userAnswerIndex === q.answer;
+                
+                let optionsHTML = '';
+                q.options.forEach((opt, optIndex) => {
+                    let styleClass = "border-gray-200 text-gray-600 bg-white";
+                    let icon = "";
+                    
+                    if (optIndex === q.answer) {
+                        styleClass = "border-green-500 bg-green-50 text-green-800 font-bold";
+                        icon = "<i class='fa-solid fa-check text-green-600 mr-2'></i>";
+                    } else if (optIndex === userAnswerIndex) {
+                        styleClass = "border-red-500 bg-red-50 text-red-800 line-through";
+                        icon = "<i class='fa-solid fa-xmark text-red-600 mr-2'></i>";
+                    }
+
+                    optionsHTML += `
+                        <div class="p-2 border rounded mb-2 flex items-center ${styleClass}">
+                            ${icon} <span class="flex-1">${opt}</span>
+                        </div>
+                    `;
+                });
+
+                const statusColor = isCorrect ? 'text-green-600' : 'text-red-600';
+                const statusIcon = isCorrect ? 'fa-check-circle' : 'fa-times-circle';
+
+                const questionHTML = `
+                    <div class="border rounded-xl p-5 shadow-sm bg-white mb-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-lg text-gray-800"><span class="text-gray-400 mr-2">Q${index + 1}.</span></h3>
+                            <span class="${statusColor} font-bold"><i class="fa-solid ${statusIcon}"></i></span>
+                        </div>
+                        <p class="text-gray-800 font-medium mb-4 text-lg">${q.question}</p>
+                        <div class="mb-4">
+                            ${optionsHTML}
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                            <p class="text-sm font-bold text-blue-800 mb-1">Explanation:</p>
+                            <p class="text-sm text-blue-900">${q.explanation}</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questionHTML;
+            });
+        }
+
+        function hideReviewScreen() {
+            reviewScreen.classList.add('hidden');
+            reviewScreen.classList.remove('flex');
+            endScreen.classList.remove('hidden');
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            endScreen.classList.add('hidden');
+            reviewScreen.classList.add('hidden');
+            reviewScreen.classList.remove('flex');
+            startScreen.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
